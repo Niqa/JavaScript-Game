@@ -7,8 +7,8 @@ document.addEventListener('DOMContentLoaded', function(){
     var y = canvas.height-30;
 
     //small value speed
-    var dx = 2;
-    var dy = -2;
+    var dx = 4;
+    var dy = -4;
     //collision
     var ballRadius = 10;
     //color
@@ -169,8 +169,8 @@ document.addEventListener('DOMContentLoaded', function(){
                 } else {
                     x = canvas.width/2;
                     y = canvas.height - 30;
-                    dx = 2;
-                    dy = -2;
+                    dx = 4;
+                    dy = -4;
                     paddleX = (canvas.width - paddleWidth) / 2;
                 }
             }
