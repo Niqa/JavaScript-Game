@@ -29,6 +29,14 @@ document.addEventListener('DOMContentLoaded', function(){
     var brickOffsetTop = 30;
     var brickOffsetLeft = 30;
     var bricks = [], r, c;
+    //score
+    var score = 0;
+    //lives
+    var lives = 3;
+
+    document.addEventListener("keydown", keyDownHandler, false);
+    document.addEventListener("keyup", keyUpHandler, false);
+    document.addEventListener("mousemove", mouseMoveHandler, false);
 
     for(c = 0; c < brickColumnCount; c++) {
         bricks[c] = [];
@@ -70,15 +78,35 @@ document.addEventListener('DOMContentLoaded', function(){
                         dy = -dy;
                         b.status = 0;
                         color = getRandomColor();
+                        score++;
+                        if(score === brickRowCount * brickColumnCount){
+                            alert("YOU WIN!");
+                            document.location.reload();
+                        }
                     }
                 }
             }
         }
     }
 
+    function drawLives() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("Lives: " + lives, canvas.width-65, 20);
+    }
 
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
+    function drawScore() {
+        ctx.font = "16px Arial";
+        ctx.fillStyle = "#0095DD";
+        ctx.fillText("SCORE: " + score, 8, 20);
+    }
+
+    function mouseMoveHandler() {
+        var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX > 0 && relativeX < canvas.width){
+            paddleX = relativeX - paddleWidth/2;
+        }
+    }
 
     function keyDownHandler(e) {
         if(e.keyCode === 39){
@@ -120,6 +148,8 @@ document.addEventListener('DOMContentLoaded', function(){
         drawBall();
         drawPaddle();
         collisionDetection();
+        drawScore();
+        drawLives();
 
         if(x + dx > canvas.width - ballRadius || x + dx < ballRadius){
             dx = -dx;
@@ -132,8 +162,17 @@ document.addEventListener('DOMContentLoaded', function(){
             if(x > paddleX && x < paddleX + paddleWidth) {
                 dy = -dy;
             } else{
-                alert('GAME OVER');
-                document.location.reload();
+                lives--;
+                if(!lives) {
+                    alert('GAME OVER');
+                    document.location.reload();
+                } else {
+                    x = canvas.width/2;
+                    y = canvas.height - 30;
+                    dx = 2;
+                    dy = -2;
+                    paddleX = (canvas.width - paddleWidth) / 2;
+                }
             }
         }
 
@@ -145,10 +184,11 @@ document.addEventListener('DOMContentLoaded', function(){
 
         x += dx;
         y += dy;
+        requestAnimationFrame(draw);
 
     }
 
-    setInterval(draw, 10);
+    draw();
 
     function getRandomColor() {
         var letters = '0123456789ABCDEF';
